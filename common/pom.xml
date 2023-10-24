@@ -15,7 +15,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jetcd-version>0.7.6</jetcd-version>
+        <jetcd-version>0.5.3</jetcd-version>
         <lombok-version>1.18.30</lombok-version>
 
         <junit-jupiter-version>5.9.3</junit-jupiter-version>
@@ -35,16 +35,11 @@
             <version>${lombok-version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.36</version>
-        </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.36</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.7</version>
         </dependency>
 
 

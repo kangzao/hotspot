@@ -1,0 +1,13 @@
+netty:
+  port: ${nettyPort:1118}
+
+local:
+  address: ${localAddress:} #有些获取到的ip不能用，需要手工配worker的地址
+
+#etcd的地址，如有多个用逗号分隔
+etcd:
+  server: ${etcdServer:http://127.0.0.1:2379} #etcd的地址，重要！！！
+  serverPath: ${serverPath:default} #该server放到哪个path下
+
+server:
+  port: 8888
