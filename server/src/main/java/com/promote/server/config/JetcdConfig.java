@@ -1,7 +1,7 @@
 package com.promote.server.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.promote.hotspot.common.etcd.JetcdClient;
+import org.promote.hotspot.client.test.hotspot.common.etcd.JetcdClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

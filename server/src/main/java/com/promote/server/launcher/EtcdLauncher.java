@@ -1,11 +1,10 @@
 package com.promote.server.launcher;
 
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.promote.hotspot.common.config.ConfigConstant;
-import org.promote.hotspot.common.etcd.JetcdClient;
-import org.promote.hotspot.common.tool.IpUtils;
+import org.promote.hotspot.client.test.hotspot.common.config.ConfigConstant;
+import org.promote.hotspot.client.test.hotspot.common.etcd.JetcdClient;
+import org.promote.hotspot.client.test.hotspot.common.tool.IpUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +15,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 服务端启动类
+ *
  * @author enping.jep
  * @date 2023/10/19 15:05
  **/
