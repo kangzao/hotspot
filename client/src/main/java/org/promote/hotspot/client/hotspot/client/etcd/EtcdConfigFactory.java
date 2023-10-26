@@ -1,4 +1,4 @@
-package org.promote.hotspot.client.test.hotspot.client.etcd;
+package org.promote.hotspot.client.hotspot.client.etcd;
 
 import org.promote.hotspot.client.test.hotspot.common.etcd.JetcdClient;
 

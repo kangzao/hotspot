@@ -32,12 +32,26 @@ public class JetcdClient {
 
     private Lease leaseClient;
 
-    private KV kvClient;
+    private KV kv;
 
     public JetcdClient(String endPoints) {
         client = Client.builder().endpoints(endPoints.split(",")).build();
         this.leaseClient = client.getLeaseClient();
-        this.kvClient = client.getKVClient();
+        this.kv = client.getKVClient();
+    }
+
+    public String get(String key) {
+        GetResponse getResponse = null;
+        try {
+            getResponse = kv.get(bytesOf(key)).get();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+        return getResponse.getCount() > 0 ?
+                getResponse.getKvs().get(0).getValue().toString(UTF_8) :
+                null;
     }
 
     /**
@@ -53,7 +67,7 @@ public class JetcdClient {
             log.info("[{}]申请租约成功，租约ID [{}]", key, Long.toHexString(leaseId));
             // 准备好put操作的client
             PutOption putOption = PutOption.newBuilder().withLeaseId(leaseId).build();
-            kvClient.put(bytesOf(key), bytesOf(value), putOption);
+            kv.put(bytesOf(key), bytesOf(value), putOption);
         });
     }
 
@@ -71,7 +85,7 @@ public class JetcdClient {
         GetOption getOption = GetOption.newBuilder().withPrefix(bytesOf(key)).build();
         GetResponse getResponse = null;
         try {
-            getResponse = kvClient.get(bytesOf(key), getOption).get();
+            getResponse = kv.get(bytesOf(key), getOption).get();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (ExecutionException e) {

@@ -1,7 +1,7 @@
-package org.promote.hotspot.client.test.hotspot.client;
+package org.promote.hotspot.client.hotspot.client;
 
-import org.promote.hotspot.client.test.hotspot.client.etcd.EtcdConfigFactory;
-import org.promote.hotspot.client.test.hotspot.client.etcd.EtcdLauncher;
+import org.promote.hotspot.client.hotspot.client.etcd.EtcdConfigFactory;
+import org.promote.hotspot.client.hotspot.client.etcd.EtcdLauncher;
 
 /**
  * client的启动类
@@ -25,8 +25,9 @@ public class ClientLauncher {
      * client启动各类功能
      */
     public void startPipeline() {
-        EtcdConfigFactory.buildConfigCenter(etcdServer);//初始化JetcdClient
-        EtcdLauncher launcher = new EtcdLauncher();//启动etcd
+        //设置本地缓存大小
+        EtcdConfigFactory.buildConfigCenter(etcdServer);//设置etcd地址，初始化JetcdClient，先连接上etcd，然后再监听
+        EtcdLauncher launcher = new EtcdLauncher();
         launcher.launch();//开启与etcd相关的监听
     }
 

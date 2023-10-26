@@ -4,7 +4,7 @@ etcd:
 
 spring:
   application:
-    name: ${name:sample}
+    name: ${name:test}
 
 server:
   port: 9999
