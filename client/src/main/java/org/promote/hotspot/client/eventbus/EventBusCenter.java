@@ -1,4 +1,4 @@
-package org.promote.hotspot.client.hotspot.client.eventbus;
+package org.promote.hotspot.client.eventbus;
 
 import com.google.common.eventbus.EventBus;
 

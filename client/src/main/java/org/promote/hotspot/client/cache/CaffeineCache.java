@@ -1,4 +1,4 @@
-package org.promote.hotspot.client.hotspot.client.cache;
+package org.promote.hotspot.client.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
 

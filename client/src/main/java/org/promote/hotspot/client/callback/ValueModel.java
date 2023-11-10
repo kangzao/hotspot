@@ -1,8 +1,8 @@
-package org.promote.hotspot.client.hotspot.client.callback;
+package org.promote.hotspot.client.callback;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.promote.hotspot.client.hotspot.client.rule.RuleHolder;
+import org.promote.hotspot.client.rule.RuleHolder;
 import org.promote.hotspot.client.test.hotspot.common.tool.Constant;
 
 /**

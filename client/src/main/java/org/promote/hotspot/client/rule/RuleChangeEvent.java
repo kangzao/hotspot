@@ -1,4 +1,4 @@
-package org.promote.hotspot.client.hotspot.client.rule;
+package org.promote.hotspot.client.rule;
 
 import lombok.Getter;
 import lombok.Setter;

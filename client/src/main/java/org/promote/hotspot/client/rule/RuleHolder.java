@@ -1,11 +1,11 @@
-package org.promote.hotspot.client.hotspot.client.rule;
+package org.promote.hotspot.client.rule;
 
 import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.promote.hotspot.client.hotspot.client.cache.CacheFactory;
-import org.promote.hotspot.client.hotspot.client.cache.LocalCache;
+import org.promote.hotspot.client.cache.CacheFactory;
+import org.promote.hotspot.client.cache.LocalCache;
 import org.promote.hotspot.common.rule.KeyRule;
 
 import java.util.ArrayList;
@@ -15,6 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
+ * 保存规则
+ *
  * @author enping.jep
  * @date 2023/10/25 21:43
  **/

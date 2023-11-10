@@ -1,4 +1,4 @@
-package org.promote.hotspot.client.hotspot.client.core;
+package org.promote.hotspot.client.core;
 
 /**
  * @author enping.jep

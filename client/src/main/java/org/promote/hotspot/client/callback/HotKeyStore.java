@@ -1,7 +1,7 @@
-package org.promote.hotspot.client.hotspot.client.callback;
+package org.promote.hotspot.client.callback;
 
-import org.promote.hotspot.client.hotspot.client.cache.CacheFactory;
-import org.promote.hotspot.client.hotspot.client.cache.LocalCache;
+import org.promote.hotspot.client.cache.CacheFactory;
+import org.promote.hotspot.client.cache.LocalCache;
 import org.promote.hotspot.client.hotspot.common.config.KeyType;
 import org.promote.hotspot.client.test.hotspot.common.tool.Constant;
 

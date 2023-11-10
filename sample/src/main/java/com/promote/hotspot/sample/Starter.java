@@ -1,6 +1,6 @@
 package com.promote.hotspot.sample;
 
-import org.promote.hotspot.client.hotspot.client.ClientLauncher;
+import org.promote.hotspot.client.ClientLauncher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

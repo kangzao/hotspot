@@ -1,4 +1,4 @@
-package org.promote.hotspot.client.hotspot.client.callback;
+package org.promote.hotspot.client.callback;
 
 import org.promote.hotspot.client.test.hotspot.common.model.HotKeyModel;
 

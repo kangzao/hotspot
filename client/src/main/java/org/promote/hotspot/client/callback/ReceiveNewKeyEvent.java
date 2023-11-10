@@ -1,4 +1,4 @@
-package org.promote.hotspot.client.hotspot.client.callback;
+package org.promote.hotspot.client.callback;
 
 import lombok.Getter;
 import lombok.Setter;

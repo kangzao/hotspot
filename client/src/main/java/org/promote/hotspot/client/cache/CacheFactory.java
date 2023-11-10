@@ -1,6 +1,6 @@
-package org.promote.hotspot.client.hotspot.client.cache;
+package org.promote.hotspot.client.cache;
 
-import org.promote.hotspot.client.hotspot.client.rule.RuleHolder;
+import org.promote.hotspot.client.rule.RuleHolder;
 
 /**
  * 用户可以自定义cache

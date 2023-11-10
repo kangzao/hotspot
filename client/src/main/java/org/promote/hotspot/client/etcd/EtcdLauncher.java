@@ -1,14 +1,15 @@
-package org.promote.hotspot.client.hotspot.client.etcd;
+package org.promote.hotspot.client.etcd;
 
 import io.etcd.jetcd.KeyValue;
-import io.netty.util.internal.StringUtil;
+import io.etcd.jetcd.Watch;
+import io.etcd.jetcd.watch.WatchEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.promote.hotspot.client.hotspot.client.ClientContext;
-import org.promote.hotspot.client.hotspot.client.callback.ReceiveNewKeyEvent;
-import org.promote.hotspot.client.hotspot.client.eventbus.EventBusCenter;
-import org.promote.hotspot.client.hotspot.client.rule.RuleChangeEvent;
+import org.promote.hotspot.client.ClientContext;
+import org.promote.hotspot.client.eventbus.EventBusCenter;
+import org.promote.hotspot.client.callback.ReceiveNewKeyEvent;
+import org.promote.hotspot.client.rule.RuleChangeEvent;
 import org.promote.hotspot.client.hotspot.common.config.ConfigConstant;
 import org.promote.hotspot.client.test.hotspot.common.etcd.JetcdClient;
 import org.promote.hotspot.client.test.hotspot.common.model.HotKeyModel;
@@ -18,9 +19,12 @@ import org.promote.hotspot.common.rule.KeyRule;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * etcd启动类
@@ -34,6 +38,8 @@ public class EtcdLauncher {
     public void launch() {
         fetchServerInfo(); //定时拉取服务端信息
         fetchRule();//拉取规则信息
+        startWatchRule();//异步监听规则变化
+//        startWatchHotKey();监听热key事件，只监听手工添加、删除的key
     }
 
 
@@ -91,9 +97,9 @@ public class EtcdLauncher {
      */
     private void fetchServerInfo() {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        //开启拉取etcd的worker信息，如果拉取失败，则定时继续拉取
+        //开启拉取etcd的server信息，如果拉取失败，则定时继续拉取
         scheduledExecutorService.scheduleAtFixedRate(() -> {
-            log.info(getClass() + ":trying to connect to etcd and fetch worker info");
+            log.info(getClass() + ":trying to connect to etcd and fetch server info");
             fetchServer();
         }, 0, 30, TimeUnit.SECONDS);
     }
@@ -101,7 +107,7 @@ public class EtcdLauncher {
     private void fetchServer() {
 
         JetcdClient jetcdClient = EtcdConfigFactory.getJetcdClient();
-        //获取所有server的地址
+        //获取所有server的地址  先从/hotspot/servers/$APP_NAME中获取
         List<KeyValue> keyValues = jetcdClient.getPrefix(ConfigConstant.serversPath + ClientContext.APP_NAME);
 
         if (CollectionUtils.isEmpty(keyValues)) {
@@ -118,7 +124,7 @@ public class EtcdLauncher {
             for (KeyValue keyValue : keyValues) {
                 //value里放的是ip地址
                 String ipPort = keyValue.getValue().toString(StandardCharsets.UTF_8);
-                log.info(ipPort);
+                log.info("获取服务端地址信息：" + ipPort);
                 addresses.add(ipPort);
             }
         }
@@ -145,5 +151,41 @@ public class EtcdLauncher {
             log.error(getClass() + ":etcd connected fail. Check the etcd address!!!");
         }
 
+    }
+
+    /**
+     * 异步监听rule规则变化
+     */
+    private void startWatchRule() {
+        JetcdClient jetcdClient = EtcdConfigFactory.getJetcdClient();
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        String key = ConfigConstant.rulePath + ClientContext.APP_NAME;
+        executorService.submit(() -> {
+            log.info(getClass() + "--- begin watch rule change ----");
+            jetcdClient.watch(key, Watch.listener(watchResponse -> {
+                log.info("收到[{}]的事件", key);
+                // 被调用时传入的是事件集合，这里遍历每个事件
+                watchResponse.getEvents().forEach(watchEvent -> {
+                    // 操作类型
+                    WatchEvent.EventType eventType = watchEvent.getEventType();
+                    // 操作的键值对
+                    KeyValue keyValue = watchEvent.getKeyValue();
+                    log.info("type={}, key={}, value={}",
+                            eventType,
+                            keyValue.getKey().toString(UTF_8),
+                            keyValue.getValue().toString(UTF_8));
+                    String rules = keyValue.getValue().toString(UTF_8);
+                    List<KeyRule> ruleList = new ArrayList<>();
+                    if (StringUtils.isEmpty(rules)) {
+                        //会清空本地缓存
+                        notifyRuleChange(ruleList);
+                        return;
+                    }
+                    //更新最新的rule信息
+                    ruleList = FastJsonUtils.toList(rules, KeyRule.class);
+                    notifyRuleChange(ruleList);
+                });
+            }));
+        });
     }
 }

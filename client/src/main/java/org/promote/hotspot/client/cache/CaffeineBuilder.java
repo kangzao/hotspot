@@ -1,8 +1,8 @@
-package org.promote.hotspot.client.hotspot.client.cache;
+package org.promote.hotspot.client.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import org.promote.hotspot.client.hotspot.client.ClientContext;
+import org.promote.hotspot.client.ClientContext;
 
 import java.util.concurrent.TimeUnit;
 

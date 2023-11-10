@@ -1,7 +1,9 @@
-package org.promote.hotspot.client.hotspot.client;
+package org.promote.hotspot.client;
 
-import org.promote.hotspot.client.hotspot.client.etcd.EtcdConfigFactory;
-import org.promote.hotspot.client.hotspot.client.etcd.EtcdLauncher;
+import org.promote.hotspot.client.etcd.EtcdConfigFactory;
+import org.promote.hotspot.client.etcd.EtcdLauncher;
+import org.promote.hotspot.client.eventbus.EventBusCenter;
+import org.promote.hotspot.client.rule.RuleHolder;
 
 /**
  * client的启动类
@@ -25,10 +27,15 @@ public class ClientLauncher {
      * client启动各类功能
      */
     public void startPipeline() {
-        //设置本地缓存大小
+
+        //设置caffeine的最大容量
+        ClientContext.CAFFEINE_SIZE = caffeineSize;
         EtcdConfigFactory.buildConfigCenter(etcdServer);//设置etcd地址，初始化JetcdClient，先连接上etcd，然后再监听
+
         EtcdLauncher launcher = new EtcdLauncher();
+        registerEventBus();
         launcher.launch();//开启与etcd相关的监听
+
     }
 
 
@@ -81,5 +88,14 @@ public class ClientLauncher {
             return ClientLauncher;
         }
 
+    }
+
+    private void registerEventBus() {
+        //netty连接器会关注WorkerInfoChangeEvent事件
+//        EventBusCenter.register(new WorkerChangeSubscriber());
+        //热key探测回调关注热key事件
+//        EventBusCenter.register(new ReceiveNewKeySubscribe());
+        //Rule的变化的事件
+        EventBusCenter.register(new RuleHolder());
     }
 }
