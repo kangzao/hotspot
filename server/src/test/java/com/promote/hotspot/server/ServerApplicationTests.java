@@ -1,4 +1,4 @@
-package com.promote.server;
+package com.promote.hotspot.server;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

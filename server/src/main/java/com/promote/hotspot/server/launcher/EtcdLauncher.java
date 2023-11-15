@@ -1,10 +1,10 @@
-package com.promote.server.launcher;
+package com.promote.hotspot.server.launcher;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.promote.hotspot.client.hotspot.common.config.ConfigConstant;
-import org.promote.hotspot.client.test.hotspot.common.etcd.JetcdClient;
-import org.promote.hotspot.client.test.hotspot.common.tool.IpUtils;
+import org.promote.hotspot.common.config.ConfigConstant;
+import org.promote.hotspot.common.etcd.JetcdClient;
+import org.promote.hotspot.common.tool.IpUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

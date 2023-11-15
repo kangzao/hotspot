@@ -1,11 +1,8 @@
-package org.promote.hotspot.client.test.hotspot.common.model;
+package org.promote.hotspot.common.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.promote.hotspot.client.test.hotspot.common.convert.LongAdderSerializer;
-import org.promote.hotspot.client.test.hotspot.common.tool.IdGenerator;
+import org.promote.hotspot.common.convert.LongAdderSerializer;
+import org.promote.hotspot.common.tool.IdGenerator;
 
 import java.util.concurrent.atomic.LongAdder;
 

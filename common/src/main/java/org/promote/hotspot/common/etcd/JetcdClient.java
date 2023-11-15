@@ -1,4 +1,4 @@
-package org.promote.hotspot.client.test.hotspot.common.etcd;
+package org.promote.hotspot.common.etcd;
 
 
 import com.google.protobuf.ByteString;

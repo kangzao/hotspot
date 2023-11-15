@@ -10,10 +10,10 @@ import org.promote.hotspot.client.ClientContext;
 import org.promote.hotspot.client.eventbus.EventBusCenter;
 import org.promote.hotspot.client.callback.ReceiveNewKeyEvent;
 import org.promote.hotspot.client.rule.RuleChangeEvent;
-import org.promote.hotspot.client.hotspot.common.config.ConfigConstant;
-import org.promote.hotspot.client.test.hotspot.common.etcd.JetcdClient;
-import org.promote.hotspot.client.test.hotspot.common.model.HotKeyModel;
-import org.promote.hotspot.client.test.hotspot.common.tool.FastJsonUtils;
+import org.promote.hotspot.common.config.ConfigConstant;
+import org.promote.hotspot.common.etcd.JetcdClient;
+import org.promote.hotspot.common.model.HotKeyModel;
+import org.promote.hotspot.common.tool.FastJsonUtils;
 import org.promote.hotspot.common.rule.KeyRule;
 
 import java.nio.charset.StandardCharsets;

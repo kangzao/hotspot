@@ -1,6 +1,6 @@
 package org.promote.hotspot.client.core;
 
-import org.promote.hotspot.client.test.hotspot.common.model.HotKeyModel;
+import org.promote.hotspot.common.model.HotKeyModel;
 
 /**
  * @author enping.jep

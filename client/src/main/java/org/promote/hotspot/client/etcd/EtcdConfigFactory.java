@@ -1,6 +1,6 @@
 package org.promote.hotspot.client.etcd;
 
-import org.promote.hotspot.client.test.hotspot.common.etcd.JetcdClient;
+import org.promote.hotspot.common.etcd.JetcdClient;
 
 /**
  * @author enping.jep

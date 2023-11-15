@@ -1,4 +1,4 @@
-package com.promote.server;
+package com.promote.hotspot.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

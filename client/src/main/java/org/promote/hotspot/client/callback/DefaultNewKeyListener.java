@@ -2,7 +2,7 @@ package org.promote.hotspot.client.callback;
 
 import lombok.extern.slf4j.Slf4j;
 import org.promote.hotspot.client.cache.CacheFactory;
-import org.promote.hotspot.client.test.hotspot.common.model.HotKeyModel;
+import org.promote.hotspot.common.model.HotKeyModel;
 
 /**
  * 收到来自于server的新增key，或者etcd的新增和删除key事件

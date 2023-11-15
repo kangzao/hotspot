@@ -1,6 +1,6 @@
-package org.promote.hotspot.client.test.hotspot.common.model;
+package org.promote.hotspot.common.model;
 
-import org.promote.hotspot.client.hotspot.common.config.KeyType;
+import org.promote.hotspot.common.config.KeyType;
 
 /**
  * @author enping.jep

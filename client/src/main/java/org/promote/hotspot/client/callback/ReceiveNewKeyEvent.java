@@ -2,7 +2,7 @@ package org.promote.hotspot.client.callback;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.promote.hotspot.client.test.hotspot.common.model.HotKeyModel;
+import org.promote.hotspot.common.model.HotKeyModel;
 
 /**
  * @author enping.jep

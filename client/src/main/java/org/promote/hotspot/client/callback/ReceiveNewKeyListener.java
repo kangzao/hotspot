@@ -1,6 +1,6 @@
 package org.promote.hotspot.client.callback;
 
-import org.promote.hotspot.client.test.hotspot.common.model.HotKeyModel;
+import org.promote.hotspot.common.model.HotKeyModel;
 
 /**
  * 客户端监听到有newKey事件

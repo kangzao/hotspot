@@ -1,7 +1,7 @@
 package org.promote.hotspot.client.core;
 
 import io.netty.channel.Channel;
-import org.promote.hotspot.client.test.hotspot.common.model.HotKeyModel;
+import org.promote.hotspot.common.model.HotKeyModel;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;

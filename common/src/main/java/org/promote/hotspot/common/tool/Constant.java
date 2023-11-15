@@ -1,4 +1,4 @@
-package org.promote.hotspot.client.test.hotspot.common.tool;
+package org.promote.hotspot.common.tool;
 
 /**
  * @author enping.jep

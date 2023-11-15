@@ -1,4 +1,4 @@
-package org.promote.hotspot.client.test.hotspot.common.convert;
+package org.promote.hotspot.common.convert;
 
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.ObjectSerializer;
