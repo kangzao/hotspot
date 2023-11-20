@@ -1,5 +1,10 @@
 package org.promote.hotspot.client.core;
 
+import org.apache.commons.lang3.StringUtils;
+import org.promote.hotspot.client.rule.RuleHolder;
+import org.promote.hotspot.common.model.KeyCountModel;
+import org.promote.hotspot.common.tool.Constant;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -116,9 +121,9 @@ public class TurnCountCollector implements IKeyCollector<KeyHotModel, KeyCountMo
 
     public void put(String key, boolean isHot, ConcurrentHashMap<String, HitCount> map) {
         //如key是pin_的前缀，则存储pin_
-        String rule = KeyRuleHolder.rule(key);
+        String rule = RuleHolder.rule(key);
         //不在规则内的不处理
-        if (StrUtil.isEmpty(rule)) {
+        if (StringUtils.isEmpty(rule)) {
             return;
         }
         String nowTime = nowTime();

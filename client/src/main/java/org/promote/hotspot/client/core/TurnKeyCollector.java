@@ -1,5 +1,7 @@
 package org.promote.hotspot.client.core;
 
+import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.promote.hotspot.common.model.HotKeyModel;
 
 import java.util.List;
@@ -37,13 +39,14 @@ public class TurnKeyCollector implements IKeyCollector<HotKeyModel, HotKeyModel>
     }
 
     private List<HotKeyModel> get(ConcurrentHashMap<String, HotKeyModel> map) {
-        return CollectionUtil.list(false, map.values());
+        return Lists.newArrayList(map.values());
+
     }
 
     @Override
     public void collect(HotKeyModel hotKeyModel) {
         String key = hotKeyModel.getKey();
-        if (StrUtil.isEmpty(key)) {
+        if (StringUtils.isEmpty(key)) {
             return;
         }
         if (atomicLong.get() % 2 == 0) {

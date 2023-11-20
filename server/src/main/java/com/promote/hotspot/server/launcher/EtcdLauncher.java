@@ -40,11 +40,9 @@ public class EtcdLauncher {
     @PostConstruct
     public void heartBeat() {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(() -> {
-            log.info("开始心跳检测");
-            //和etcd保持心跳连接
-            uploadServerInfo();
-        }, 0, 5, TimeUnit.SECONDS);
+        //            log.info("开始心跳检测");
+        //和etcd保持心跳连接
+        scheduledExecutorService.scheduleAtFixedRate(this::uploadServerInfo, 0, 5, TimeUnit.SECONDS);
     }
 
 

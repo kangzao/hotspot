@@ -1,5 +1,5 @@
 netty:
-  port: ${nettyPort:1118}
+  port: ${nettyPort:11111}
 
 local:
   address: ${localAddress:} #有些获取到的ip不能用，需要手工配worker的地址

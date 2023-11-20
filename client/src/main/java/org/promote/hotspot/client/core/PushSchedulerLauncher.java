@@ -1,5 +1,8 @@
 package org.promote.hotspot.client.core;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import org.apache.commons.collections.CollectionUtils;
+import org.promote.hotspot.client.ClientContext;
 import org.promote.hotspot.common.model.HotKeyModel;
 
 import java.util.List;
@@ -19,12 +22,13 @@ public class PushSchedulerLauncher {
             period = 500L;
         }
         @SuppressWarnings("PMD.ThreadPoolCreationRule")
-        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("hotkey-pusher-service-executor", true));
+        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(
+                new ThreadFactoryBuilder().setDaemon(true).setNameFormat("hotspot-pusher-service-executor").build());
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             IKeyCollector<HotKeyModel, HotKeyModel> collectHK = KeyHandlerFactory.getCollector();
             List<HotKeyModel> hotKeyModels = collectHK.lockAndGetResult();
-            if (CollectionUtil.isNotEmpty(hotKeyModels)) {
-                KeyHandlerFactory.getPusher().send(Context.APP_NAME, hotKeyModels);
+            if (CollectionUtils.isNotEmpty(hotKeyModels)) {
+                KeyHandlerFactory.getPusher().send(ClientContext.APP_NAME, hotKeyModels);
                 collectHK.finishOnce();
             }
 

@@ -1,7 +1,13 @@
 package org.promote.hotspot.client.core;
 
 import io.netty.channel.Channel;
+import lombok.extern.java.Log;
+import org.promote.hotspot.client.ClientContext;
+import org.promote.hotspot.client.core.server.ServerInfoHolder;
 import org.promote.hotspot.common.model.HotKeyModel;
+import org.promote.hotspot.common.model.HotKeyMsg;
+import org.promote.hotspot.common.model.KeyCountModel;
+import org.promote.hotspot.common.model.MessageType;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -15,6 +21,7 @@ import java.util.Map;
  * @author enping.jep
  * @date 2023/11/09 20:59
  **/
+@Log
 public class NettyKeyPusher implements IKeyPusher {
     @Override
     public void send(String appName, List<HotKeyModel> list) {
@@ -24,7 +31,7 @@ public class NettyKeyPusher implements IKeyPusher {
         Map<Channel, List<HotKeyModel>> map = new HashMap<>();
         for (HotKeyModel model : list) {
             model.setCreateTime(now);
-            Channel channel = WorkerInfoHolder.chooseChannel(model.getKey());
+            Channel channel = ServerInfoHolder.chooseChannel(model.getKey());
             if (channel == null) {
                 continue;
             }
@@ -36,15 +43,15 @@ public class NettyKeyPusher implements IKeyPusher {
         for (Channel channel : map.keySet()) {
             try {
                 List<HotKeyModel> batch = map.get(channel);
-                HotKeyMsg hotKeyMsg = new HotKeyMsg(MessageType.REQUEST_NEW_KEY, Context.APP_NAME);
+                HotKeyMsg hotKeyMsg = new HotKeyMsg(MessageType.REQUEST_NEW_KEY, ClientContext.APP_NAME);
                 hotKeyMsg.setHotKeyModels(batch);
                 channel.writeAndFlush(hotKeyMsg).sync();
             } catch (Exception e) {
                 try {
                     InetSocketAddress insocket = (InetSocketAddress) channel.remoteAddress();
-                    JdLogger.error(getClass(), "flush error " + insocket.getAddress().getHostAddress());
+                    log.info("flush error " + insocket.getAddress().getHostAddress());
                 } catch (Exception ex) {
-                    JdLogger.error(getClass(), "flush error");
+                    log.info("flush error");
                 }
 
             }
@@ -58,7 +65,7 @@ public class NettyKeyPusher implements IKeyPusher {
         Map<Channel, List<KeyCountModel>> map = new HashMap<>();
         for (KeyCountModel model : list) {
             model.setCreateTime(now);
-            Channel channel = WorkerInfoHolder.chooseChannel(model.getRuleKey());
+            Channel channel = ServerInfoHolder.chooseChannel(model.getRuleKey());
             if (channel == null) {
                 continue;
             }
@@ -70,15 +77,15 @@ public class NettyKeyPusher implements IKeyPusher {
         for (Channel channel : map.keySet()) {
             try {
                 List<KeyCountModel> batch = map.get(channel);
-                HotKeyMsg hotKeyMsg = new HotKeyMsg(MessageType.REQUEST_HIT_COUNT, Context.APP_NAME);
+                HotKeyMsg hotKeyMsg = new HotKeyMsg(MessageType.REQUEST_HIT_COUNT, ClientContext.APP_NAME);
                 hotKeyMsg.setKeyCountModels(batch);
                 channel.writeAndFlush(hotKeyMsg).sync();
             } catch (Exception e) {
                 try {
                     InetSocketAddress insocket = (InetSocketAddress) channel.remoteAddress();
-                    JdLogger.error(getClass(), "flush error " + insocket.getAddress().getHostAddress());
+                    log.info("flush error " + insocket.getAddress().getHostAddress());
                 } catch (Exception ex) {
-                    JdLogger.error(getClass(), "flush error");
+                    log.info("flush error");
                 }
 
             }

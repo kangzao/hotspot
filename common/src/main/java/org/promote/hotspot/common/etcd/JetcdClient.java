@@ -68,7 +68,7 @@ public class JetcdClient {
     public void putWithLease(String key, String value, long ttl) {
         leaseClient.grant(ttl).thenAccept(result -> {
             long leaseId = result.getID();
-            log.info("[{}]申请租约成功，租约ID [{}]", key, Long.toHexString(leaseId));
+            // log.info("[{}]申请租约成功，租约ID [{}]", key, Long.toHexString(leaseId));
             // 准备好put操作的client
             PutOption putOption = PutOption.newBuilder().withLeaseId(leaseId).build();
             kv.put(bytesOf(key), bytesOf(value), putOption);

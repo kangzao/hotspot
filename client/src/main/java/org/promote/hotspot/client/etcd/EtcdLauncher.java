@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.promote.hotspot.client.ClientContext;
+import org.promote.hotspot.client.core.server.ServerInfoChangeEvent;
 import org.promote.hotspot.client.eventbus.EventBusCenter;
 import org.promote.hotspot.client.callback.ReceiveNewKeyEvent;
 import org.promote.hotspot.client.rule.RuleChangeEvent;
@@ -88,8 +89,20 @@ public class EtcdLauncher {
 
     }
 
+    /**
+     * 推送规则变化事件
+     *
+     * @param rules
+     */
     private void notifyRuleChange(List<KeyRule> rules) {
         EventBusCenter.getInstance().post(new RuleChangeEvent(rules));//通知机制,向订阅者发送消息
+    }
+
+    /**
+     * 向事件总线发布服务端变更信息
+     */
+    private void notifyServerInfoChange(List<String> addresses) {
+        EventBusCenter.getInstance().post(new ServerInfoChangeEvent(addresses));
     }
 
     /**
@@ -104,6 +117,9 @@ public class EtcdLauncher {
         }, 0, 30, TimeUnit.SECONDS);
     }
 
+    /**
+     * 获取服务器信息，然后推送事件
+     */
     private void fetchServer() {
 
         JetcdClient jetcdClient = EtcdConfigFactory.getJetcdClient();
@@ -128,6 +144,8 @@ public class EtcdLauncher {
                 addresses.add(ipPort);
             }
         }
+        //发布服务端的变更信息
+        notifyServerInfoChange(addresses);
     }
 
     /**
