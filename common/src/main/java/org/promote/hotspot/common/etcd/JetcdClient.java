@@ -6,6 +6,7 @@ import io.etcd.jetcd.*;
 import io.etcd.jetcd.kv.GetResponse;
 import io.etcd.jetcd.options.GetOption;
 import io.etcd.jetcd.options.PutOption;
+import io.etcd.jetcd.options.WatchOption;
 import io.etcd.jetcd.watch.WatchEvent;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,19 +27,18 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Slf4j
 public class JetcdClient {
-    private Client client;
     private String endPoints;
 
     private Object object;
 
-    private Lease leaseClient;
+    private final Lease leaseClient;
 
-    private KV kv;
+    private final KV kv;
 
-    private Watch watch;
+    private final Watch watch;
 
     public JetcdClient(String endPoints) {
-        client = Client.builder().endpoints(endPoints.split(",")).build();
+        Client client = Client.builder().endpoints(endPoints.split(",")).build();
         this.leaseClient = client.getLeaseClient();
         this.kv = client.getKVClient();
         this.watch = client.getWatchClient();
@@ -103,24 +103,29 @@ public class JetcdClient {
         return watch.watch(bytesOf(key), listener);
     }
 
-    public Watch.Watcher watch(String key) throws Exception {
-        Watch.Listener listener = Watch.listener(watchResponse -> {
-            log.info("收到[{}]的事件", key);
-            // 被调用时传入的是事件集合，这里遍历每个事件
-            watchResponse.getEvents().forEach(watchEvent -> {
-                // 操作类型
-                WatchEvent.EventType eventType = watchEvent.getEventType();
-                // 操作的键值对
-                KeyValue keyValue = watchEvent.getKeyValue();
-                log.info("type={}, key={}, value={}",
-                        eventType,
-                        keyValue.getKey().toString(UTF_8),
-                        keyValue.getValue().toString(UTF_8));
-            });
-        });
-
-        return watch.watch(bytesOf(key), listener);
+    public Watch.Watcher watchPrefix(String key, Watch.Listener listener) {
+        WatchOption watchOption = WatchOption.newBuilder().withPrefix(bytesOf(key)).build();
+        return watch.watch(bytesOf(key), watchOption, listener);
     }
+
+//    public Watch.Watcher watch(String key) throws Exception {
+//        Watch.Listener listener = Watch.listener(watchResponse -> {
+//            log.info("收到[{}]的事件", key);
+//            // 被调用时传入的是事件集合，这里遍历每个事件
+//            watchResponse.getEvents().forEach(watchEvent -> {
+//                // 操作类型
+//                WatchEvent.EventType eventType = watchEvent.getEventType();
+//                // 操作的键值对
+//                KeyValue keyValue = watchEvent.getKeyValue();
+//                log.info("type={}, key={}, value={}",
+//                        eventType,
+//                        keyValue.getKey().toString(UTF_8),
+//                        keyValue.getValue().toString(UTF_8));
+//            });
+//        });
+//
+//        return watch.watch(bytesOf(key), listener);
+//    }
 
 
 }

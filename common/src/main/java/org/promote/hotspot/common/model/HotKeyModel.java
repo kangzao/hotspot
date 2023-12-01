@@ -13,8 +13,9 @@ public class HotKeyModel extends BaseModel {
     private String appName;
     /**
      * key的类型（譬如是接口、热用户、redis的key等）
+     * 默认是redis key
      */
-    private KeyType keyType;
+    private KeyType keyType = KeyType.REDIS_KEY;
     /**
      * 是否是删除事件
      */

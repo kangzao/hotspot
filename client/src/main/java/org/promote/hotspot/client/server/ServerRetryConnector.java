@@ -1,4 +1,4 @@
-package org.promote.hotspot.client.core.server;
+package org.promote.hotspot.client.server;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.extern.java.Log;
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 @Log
 public class ServerRetryConnector {
     /**
-     * 定时去重连没连上的workers
+     * 定时去重连没连上的server
      */
     public static void retryConnectServers() {
         @SuppressWarnings("PMD.ThreadPoolCreationRule")

@@ -1,4 +1,4 @@
-package org.promote.hotspot.client.core;
+package org.promote.hotspot.client.collector;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import java.util.List;
  * @author enping.jep
  * @date 2023/11/09 20:55
  **/
-public interface IKeyCollector<T, V> {
+public interface HotCollector<T, V> {
 
     /**
      * 锁定后的返回值
@@ -14,9 +14,9 @@ public interface IKeyCollector<T, V> {
     List<V> lockAndGetResult();
 
     /**
-     * 输入的参数
+     * 采集数据
      */
     void collect(T t);
 
-    void finishOnce();
+
 }

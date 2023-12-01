@@ -1,4 +1,4 @@
-package org.promote.hotspot.client.core;
+package org.promote.hotspot.client.model;
 
 import lombok.Data;
 
@@ -12,4 +12,9 @@ public class KeyHotModel {
     private String key;
 
     private boolean isHot;
+
+    public KeyHotModel(String key, boolean isHot) {
+        this.key = key;
+        this.isHot = isHot;
+    }
 }

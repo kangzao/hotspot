@@ -2,6 +2,7 @@ package org.promote.hotspot.client.callback;
 
 import lombok.extern.slf4j.Slf4j;
 import org.promote.hotspot.client.cache.CacheFactory;
+import org.promote.hotspot.client.model.ValueModel;
 import org.promote.hotspot.common.model.HotKeyModel;
 
 /**

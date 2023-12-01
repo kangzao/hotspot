@@ -1,6 +1,8 @@
-package org.promote.hotspot.client.core;
+package org.promote.hotspot.client.collector;
 
+import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
+import org.promote.hotspot.client.model.KeyHotModel;
 import org.promote.hotspot.client.rule.RuleHolder;
 import org.promote.hotspot.common.model.KeyCountModel;
 import org.promote.hotspot.common.tool.Constant;
@@ -17,18 +19,18 @@ import java.util.stream.Collectors;
 
 /**
  * 热点数量统计
+ * 数量收集器,这里面包含两个map，这里面key是相应的规则,HitCount里面是这个规则的总访问次数和热后访问次数
  *
  * @author enping.jep
  * @date 2023/11/09 21:04
  **/
-public class TurnCountCollector implements IKeyCollector<KeyHotModel, KeyCountModel> {
+@Log
+public class HotCountCollector implements HotCollector<KeyHotModel, KeyCountModel> {
     /**
      * 存储格式为：
-     * pin_20200624091024 -> 10
-     * pin_20200624091025 -> 20
+     * pin_20231127120921-> 10
      * <p>
-     * sku_20200624091024 -> 123
-     * sku_20200624091025 -> 142
+     * key是相应的规则,HitCount里面是这个规则的总访问次数和热后访问次数
      */
     private ConcurrentHashMap<String, HitCount> HIT_MAP_0 = new ConcurrentHashMap<>(512);
     private ConcurrentHashMap<String, HitCount> HIT_MAP_1 = new ConcurrentHashMap<>(512);
@@ -112,12 +114,9 @@ public class TurnCountCollector implements IKeyCollector<KeyHotModel, KeyCountMo
         } else {
             put(keyHotModel.getKey(), keyHotModel.isHot(), HIT_MAP_1);
         }
+        log.info(keyHotModel.toString());
     }
 
-    @Override
-    public void finishOnce() {
-
-    }
 
     public void put(String key, boolean isHot, ConcurrentHashMap<String, HitCount> map) {
         //如key是pin_的前缀，则存储pin_

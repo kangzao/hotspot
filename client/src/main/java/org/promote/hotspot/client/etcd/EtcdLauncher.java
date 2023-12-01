@@ -7,13 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.promote.hotspot.client.ClientContext;
-import org.promote.hotspot.client.core.server.ServerInfoChangeEvent;
+import org.promote.hotspot.client.server.ServerInfoChangeEvent;
 import org.promote.hotspot.client.eventbus.EventBusCenter;
 import org.promote.hotspot.client.callback.ReceiveNewKeyEvent;
 import org.promote.hotspot.client.rule.RuleChangeEvent;
 import org.promote.hotspot.common.config.ConfigConstant;
 import org.promote.hotspot.common.etcd.JetcdClient;
 import org.promote.hotspot.common.model.HotKeyModel;
+import org.promote.hotspot.common.tool.Constant;
 import org.promote.hotspot.common.tool.FastJsonUtils;
 import org.promote.hotspot.common.rule.KeyRule;
 
@@ -91,8 +92,6 @@ public class EtcdLauncher {
 
     /**
      * 推送规则变化事件
-     *
-     * @param rules
      */
     private void notifyRuleChange(List<KeyRule> rules) {
         EventBusCenter.getInstance().post(new RuleChangeEvent(rules));//通知机制,向订阅者发送消息
@@ -203,6 +202,46 @@ public class EtcdLauncher {
                     ruleList = FastJsonUtils.toList(rules, KeyRule.class);
                     notifyRuleChange(ruleList);
                 });
+            }));
+        });
+    }
+
+    private void startWatchHotKey() {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(() -> {
+            log.info("---begin watch rule change----");
+            JetcdClient jetcdClient = EtcdConfigFactory.getJetcdClient();
+            jetcdClient.watchPrefix(ConfigConstant.hotKeyPath + ClientContext.APP_NAME, Watch.listener(watchResponse -> {
+                log.info("收到[{}]的事件", ConfigConstant.hotKeyPath + ClientContext.APP_NAME);
+
+                for (WatchEvent watchEvent : watchResponse.getEvents()) {// 操作类型
+                    WatchEvent.EventType eventType = watchEvent.getEventType();
+                    // 操作的键值对
+                    KeyValue keyValue = watchEvent.getKeyValue();
+                    log.info("type={}, key={}, value={}",
+                            eventType,
+                            keyValue.getKey().toString(UTF_8),
+                            keyValue.getValue().toString(UTF_8));
+                    String key = keyValue.getKey().toString(UTF_8).replace(ConfigConstant.hotKeyPath + ClientContext.APP_NAME + "/", "");
+                    HotKeyModel model = new HotKeyModel();
+                    if (WatchEvent.EventType.DELETE == eventType) {
+                        model.setRemove(true);
+                    } else {
+                        model.setRemove(false);
+                        String value = keyValue.getValue().toString(UTF_8);
+                        //新增热key
+                        log.info("etcd receive new key : " + key + " --value:" + value);
+                        //如果这是一个删除指令，就什么也不干
+                        if (Constant.DEFAULT_DELETE_VALUE.equals(value)) {
+                            continue;
+                        }
+                        //手工创建的value是时间戳
+                        model.setCreateTime(Long.parseLong(keyValue.getValue().toString(UTF_8)));
+
+                    }
+                    model.setKey(key);
+                    EventBusCenter.getInstance().post(new ReceiveNewKeyEvent(model));
+                }
             }));
         });
     }

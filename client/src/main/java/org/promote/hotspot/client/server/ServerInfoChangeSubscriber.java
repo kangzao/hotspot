@@ -1,4 +1,4 @@
-package org.promote.hotspot.client.core.server;
+package org.promote.hotspot.client.server;
 
 import com.google.common.eventbus.Subscribe;
 

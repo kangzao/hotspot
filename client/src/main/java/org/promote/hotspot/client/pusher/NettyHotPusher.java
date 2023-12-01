@@ -1,9 +1,9 @@
-package org.promote.hotspot.client.core;
+package org.promote.hotspot.client.pusher;
 
 import io.netty.channel.Channel;
 import lombok.extern.java.Log;
 import org.promote.hotspot.client.ClientContext;
-import org.promote.hotspot.client.core.server.ServerInfoHolder;
+import org.promote.hotspot.client.server.ServerInfoHolder;
 import org.promote.hotspot.common.model.HotKeyModel;
 import org.promote.hotspot.common.model.HotKeyMsg;
 import org.promote.hotspot.common.model.KeyCountModel;
@@ -16,18 +16,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 将msg推送到netty的pusher
+ * netty推送
  *
  * @author enping.jep
- * @date 2023/11/09 20:59
+ * @date 2023/11/29 14:02
  **/
 @Log
-public class NettyKeyPusher implements IKeyPusher {
+public class NettyHotPusher implements HotPusher {
     @Override
-    public void send(String appName, List<HotKeyModel> list) {
-        //积攒了半秒的key集合，按照hash分发到不同的worker
+    public void sendHotKey(String appName, List<HotKeyModel> list) {
         long now = System.currentTimeMillis();
-
         Map<Channel, List<HotKeyModel>> map = new HashMap<>();
         for (HotKeyModel model : list) {
             model.setCreateTime(now);
@@ -35,32 +33,25 @@ public class NettyKeyPusher implements IKeyPusher {
             if (channel == null) {
                 continue;
             }
-
             List<HotKeyModel> newList = map.computeIfAbsent(channel, k -> new ArrayList<>());
             newList.add(model);
         }
 
         for (Channel channel : map.keySet()) {
+            List<HotKeyModel> batch = map.get(channel);
+            HotKeyMsg hotKeyMsg = new HotKeyMsg(MessageType.REQUEST_NEW_KEY, ClientContext.APP_NAME);
+            hotKeyMsg.setHotKeyModels(batch);
             try {
-                List<HotKeyModel> batch = map.get(channel);
-                HotKeyMsg hotKeyMsg = new HotKeyMsg(MessageType.REQUEST_NEW_KEY, ClientContext.APP_NAME);
-                hotKeyMsg.setHotKeyModels(batch);
                 channel.writeAndFlush(hotKeyMsg).sync();
-            } catch (Exception e) {
-                try {
-                    InetSocketAddress insocket = (InetSocketAddress) channel.remoteAddress();
-                    log.info("flush error " + insocket.getAddress().getHostAddress());
-                } catch (Exception ex) {
-                    log.info("flush error");
-                }
-
+            } catch (InterruptedException e) {
+                InetSocketAddress inetSocketAddress = (InetSocketAddress) channel.remoteAddress();
+                log.warning("flush error :" + inetSocketAddress.getAddress().getHostAddress());
             }
         }
     }
 
     @Override
-    public void sendCount(String appName, List<KeyCountModel> list) {
-//积攒了10秒的数量，按照hash分发到不同的worker
+    public void sendHotCount(String appName, List<KeyCountModel> list) {
         long now = System.currentTimeMillis();
         Map<Channel, List<KeyCountModel>> map = new HashMap<>();
         for (KeyCountModel model : list) {
@@ -69,25 +60,19 @@ public class NettyKeyPusher implements IKeyPusher {
             if (channel == null) {
                 continue;
             }
-
             List<KeyCountModel> newList = map.computeIfAbsent(channel, k -> new ArrayList<>());
             newList.add(model);
         }
 
         for (Channel channel : map.keySet()) {
+            List<KeyCountModel> batch = map.get(channel);
+            HotKeyMsg hotKeyMsg = new HotKeyMsg(MessageType.REQUEST_HIT_COUNT, ClientContext.APP_NAME);
+            hotKeyMsg.setKeyCountModels(batch);
             try {
-                List<KeyCountModel> batch = map.get(channel);
-                HotKeyMsg hotKeyMsg = new HotKeyMsg(MessageType.REQUEST_HIT_COUNT, ClientContext.APP_NAME);
-                hotKeyMsg.setKeyCountModels(batch);
                 channel.writeAndFlush(hotKeyMsg).sync();
-            } catch (Exception e) {
-                try {
-                    InetSocketAddress insocket = (InetSocketAddress) channel.remoteAddress();
-                    log.info("flush error " + insocket.getAddress().getHostAddress());
-                } catch (Exception ex) {
-                    log.info("flush error");
-                }
-
+            } catch (InterruptedException e) {
+                InetSocketAddress inetSocketAddress = (InetSocketAddress) channel.remoteAddress();
+                log.warning("flush error :" + inetSocketAddress.getAddress().getHostAddress());
             }
         }
     }

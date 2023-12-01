@@ -2,6 +2,7 @@ package org.promote.hotspot.client.callback;
 
 import org.promote.hotspot.client.cache.CacheFactory;
 import org.promote.hotspot.client.cache.LocalCache;
+import org.promote.hotspot.client.model.ValueModel;
 import org.promote.hotspot.common.config.KeyType;
 import org.promote.hotspot.common.tool.Constant;
 

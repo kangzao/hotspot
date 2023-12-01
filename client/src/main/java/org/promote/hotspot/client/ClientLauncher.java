@@ -1,7 +1,7 @@
 package org.promote.hotspot.client;
 
-import org.promote.hotspot.client.core.server.ServerInfoChangeSubscriber;
-import org.promote.hotspot.client.core.server.ServerRetryConnector;
+import org.promote.hotspot.client.server.ServerInfoChangeSubscriber;
+import org.promote.hotspot.client.server.ServerRetryConnector;
 import org.promote.hotspot.client.etcd.EtcdConfigFactory;
 import org.promote.hotspot.client.etcd.EtcdLauncher;
 import org.promote.hotspot.client.eventbus.EventBusCenter;
@@ -32,6 +32,11 @@ public class ClientLauncher {
         //设置caffeine的最大容量
         ClientContext.CAFFEINE_SIZE = caffeineSize;
         EtcdConfigFactory.buildConfigCenter(etcdServer);//设置etcd地址，初始化JetcdClient，先连接上etcd，然后再监听
+
+        //开始定时推送
+//        PushSchedulerStarter.startPusher(pushPeriod);
+//        PushSchedulerStarter.startCountPusher(10);
+
         //开启worker重连器
         ServerRetryConnector.retryConnectServers();
         registerEventBus();

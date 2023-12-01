@@ -1,6 +1,7 @@
-package org.promote.hotspot.client.core;
+package org.promote.hotspot.client.collector;
 
 import com.google.common.collect.Lists;
+import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.promote.hotspot.common.model.HotKeyModel;
 
@@ -16,17 +17,18 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author enping.jep
  * @date 2023/11/09 21:02
  **/
-public class TurnKeyCollector implements IKeyCollector<HotKeyModel, HotKeyModel> {
+@Log
+public class HotKeyCollector implements HotCollector<HotKeyModel, HotKeyModel> {
     private ConcurrentHashMap<String, HotKeyModel> map0 = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, HotKeyModel> map1 = new ConcurrentHashMap<>();
 
-    private AtomicLong atomicLong = new AtomicLong(0);
+    private final AtomicLong atomicLong = new AtomicLong(0);
 
     @Override
     public List<HotKeyModel> lockAndGetResult() {
         //自增后，对应的map就会停止被写入，等待被读取
         atomicLong.addAndGet(1);
-
+        //在读map的时候，不会阻塞写map，两个map同时提供轮流提供读写能力
         List<HotKeyModel> list;
         if (atomicLong.get() % 2 == 0) {
             list = get(map1);
@@ -47,6 +49,7 @@ public class TurnKeyCollector implements IKeyCollector<HotKeyModel, HotKeyModel>
     public void collect(HotKeyModel hotKeyModel) {
         String key = hotKeyModel.getKey();
         if (StringUtils.isEmpty(key)) {
+            log.warning("采集热点数据时,key为空");
             return;
         }
         if (atomicLong.get() % 2 == 0) {
@@ -61,11 +64,7 @@ public class TurnKeyCollector implements IKeyCollector<HotKeyModel, HotKeyModel>
                 model.add(hotKeyModel.getCount());
             }
         }
-
+        log.info(hotKeyModel.toString());
     }
 
-    @Override
-    public void finishOnce() {
-
-    }
 }

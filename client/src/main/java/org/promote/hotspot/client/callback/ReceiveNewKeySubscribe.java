@@ -11,7 +11,7 @@ import org.promote.hotspot.common.model.HotKeyModel;
  **/
 public class ReceiveNewKeySubscribe {
 
-    private ReceiveNewKeyListener receiveNewKeyListener = new DefaultNewKeyListener();
+    private final ReceiveNewKeyListener receiveNewKeyListener = new DefaultNewKeyListener();
 
     @Subscribe
     public void newKeyComing(ReceiveNewKeyEvent event) {
@@ -20,8 +20,6 @@ public class ReceiveNewKeySubscribe {
             return;
         }
         //收到新key推送
-        if (receiveNewKeyListener != null) {
-            receiveNewKeyListener.newKey(hotKeyModel);
-        }
+        receiveNewKeyListener.newKey(hotKeyModel);
     }
 }

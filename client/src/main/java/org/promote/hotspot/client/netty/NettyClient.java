@@ -10,7 +10,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.java.Log;
-import org.promote.hotspot.client.core.server.ServerInfoHolder;
+import org.promote.hotspot.client.server.ServerInfoHolder;
 import org.promote.hotspot.common.coder.MsgDecoder;
 import org.promote.hotspot.common.coder.MsgEncoder;
 import org.promote.hotspot.common.tool.Constant;
